@@ -15,10 +15,17 @@ func main() {
 	known := make(map[int]struct{})
 	var sum int
 
+	var values []string
+
+	ch := make(chan string)
+	go utils.ReadLines(data, ch)
+
+	for str := range ch {
+		values = append(values, str)
+	}
+
 	for {
-		ch := make(chan string)
-		go utils.ReadLines(data, ch)
-		for str := range ch {
+		for _, str := range values {
 			sum += parseValue(str)
 			if _, ok := known[sum]; ok {
 				fmt.Println("First repeat:", sum)
