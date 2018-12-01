@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jsvensson/adventofcode/2018/utils"
 )
@@ -11,16 +12,18 @@ import (
 const data = "../data/01-a.txt"
 
 func main() {
+	start := time.Now()
+
+	var sum int
 	ch := make(chan string)
 
 	go utils.ReadLines(data, ch)
 
-	var sum int
 	for str := range ch {
 		sum += parseValue(str)
 	}
 
-	fmt.Println("Sum:", sum)
+	fmt.Printf("Sum: %d (%s)\n", sum, time.Since(start))
 }
 
 func parseValue(s string) int {

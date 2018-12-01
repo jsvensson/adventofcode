@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jsvensson/adventofcode/2018/utils"
 )
@@ -12,12 +13,13 @@ import (
 const data = "../data/01-a.txt"
 
 func main() {
-	known := make(map[int]struct{})
+	start := time.Now()
+
 	var sum int
-
 	var values []string
-
+	known := make(map[int]struct{})
 	ch := make(chan string)
+
 	go utils.ReadLines(data, ch)
 
 	for str := range ch {
@@ -28,7 +30,7 @@ func main() {
 		for _, str := range values {
 			sum += parseValue(str)
 			if _, ok := known[sum]; ok {
-				fmt.Println("First repeat:", sum)
+				fmt.Printf("First repeat: %d (%s)\n", sum, time.Since(start))
 				os.Exit(0)
 			}
 
