@@ -17,21 +17,7 @@ func main() {
 }
 
 func solve(input <-chan string) string {
-	ids := make([]string, 0)
-
-	for str := range input {
-		count := make(map[int32]int)
-		for _, v := range str {
-			count[v] += 1
-		}
-
-		for _, v := range count {
-			switch v {
-			case 2, 3:
-				ids = append(ids, str)
-			}
-		}
-	}
+	ids := getValidIDs(input)
 
 	for _, box := range ids {
 		for _, box2 := range ids {
@@ -39,14 +25,7 @@ func solve(input <-chan string) string {
 				continue
 			}
 
-			var mismatch int
-			for i, v := range box {
-				if box2[i] != uint8(v) {
-					mismatch++
-				}
-			}
-
-			if mismatch == 1 {
+			if countMismatch(box, box2) == 1 {
 				return getCommon(box, box2)
 			}
 		}
@@ -55,6 +34,19 @@ func solve(input <-chan string) string {
 	return "not found"
 }
 
+// Returns count of non-matching characters in two strings
+func countMismatch(a, b string) int {
+	var mismatch int
+	for i, _ := range a {
+		if a[i] != b[i] {
+			mismatch++
+		}
+	}
+
+	return mismatch
+}
+
+// Returns common characters in two strings
 func getCommon(a, b string) string {
 	result := make([]byte, 0)
 
@@ -65,4 +57,23 @@ func getCommon(a, b string) string {
 	}
 
 	return string(result)
+}
+
+func getValidIDs(ch <-chan string) []string {
+	valid := make([]string, 0)
+	for str := range ch {
+		count := make(map[int32]int)
+		for _, v := range str {
+			count[v] += 1
+		}
+
+		for _, v := range count {
+			switch v {
+			case 2, 3:
+				valid = append(valid, str)
+			}
+		}
+	}
+
+	return valid
 }
